@@ -12,11 +12,16 @@ A highly extensible Discord Bot template with rich logging and features. It come
 - Built-in database
 - Cog-based extensibility
 
+## Screenshot
+
+![Screenshot](/screenshot.png)
+
 ## Table of Contents
 
 - [discord-py-template](#discord-py-template)
   - [Overview](#overview)
   - [Features](#features)
+  - [Screenshot](#screenshot)
   - [Table of Contents](#table-of-contents)
   - [Installation](#installation)
     - [Requirements](#requirements)

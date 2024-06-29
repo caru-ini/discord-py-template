@@ -13,11 +13,16 @@ Language in: [[English](README.md)] [[日本語](README_ja.md)]
 - 標準搭載のデータベース
 - Cogベースの拡張性
 
+## スクリーンショット
+
+![Screenshot](/screenshot.png)
+
 ## Table of Contents
 
 - [discord-py-template](#discord-py-template)
   - [概要](#概要)
   - [機能](#機能)
+  - [スクリーンショット](#スクリーンショット)
   - [Table of Contents](#table-of-contents)
   - [インストール方法](#インストール方法)
     - [必要なもの](#必要なもの)
