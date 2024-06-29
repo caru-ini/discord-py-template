@@ -22,7 +22,6 @@ A highly extensible Discord Bot template with rich logging and features. It come
     - [Requirements](#requirements)
     - [Clone \& Install](#clone--install)
     - [Bot Configuration](#bot-configuration)
-    - [Database Setup](#database-setup)
   - [How to Use Prisma](#how-to-use-prisma)
   - [Adding Cogs](#adding-cogs)
     - [Adding a Cog as a .py file](#adding-a-cog-as-a-py-file)
@@ -66,14 +65,6 @@ cp .env.example .env
   Make sure to enable all Intents in the Bot settings.
 
 `config.json` contains the settings for `Cogs`. No initial setup is required.
-
-### Database Setup
-
-To run the bot, you need to set up the database. Execute the following command to create the database and sample tables:
-
-```bash
-prisma db push
-```
 
 Now your Bot is ready. You can start the Bot with the following command:
 
