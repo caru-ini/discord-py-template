@@ -3,7 +3,7 @@ import os
 import asyncio
 import sys
 from pathlib import Path
-from typing import List
+from typing import List, Literal, Optional
 import discord
 
 from discord.ext import commands
@@ -21,6 +21,7 @@ load_dotenv()
 CONFIG_PATH = Path(os.getenv("CONFIG_PATH", "config.json"))
 LOG_PATH = Path(os.getenv("LOG_PATH", "bot.log"))
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+TOKEN = os.getenv("TOKEN")
 
 console = Console()
 
@@ -76,22 +77,59 @@ async def scan_all_cogs() -> List[str]:
 
 bot = commands.Bot(command_prefix='!', intents=Intents.all())
 
+bot.owner_ids = [int(id) for id in os.getenv('OWNERS', '').split(',')]
+
+
+@bot.event
+async def on_ready():
+    logger.info(f"Logged in as {bot.user}")
+    active_guilds = len(bot.guilds)
+    if not active_guilds:
+        invite_link = discord.utils.oauth_url(
+            bot.user.id, permissions=discord.Permissions(permissions=8))
+        logger.warning(
+            f"Bot seems to be in no guilds. Access link to invite. \nInvite link: {invite_link}")
+    logger.info(f"Active in {active_guilds} guilds")
+
+
+# Umbra's Sync Command
+# Source: https://about.abstractumbra.dev/discord.py/2023/01/29/sync-command-example.html
+@bot.command()
+@commands.guild_only()
+@commands.is_owner()
+async def sync(ctx: commands.Context, guilds: commands.Greedy[discord.Object], spec: Optional[Literal["~", "*", "^"]] = None) -> None:
+    async with ctx.typing():
+        if not guilds:
+            if spec == "~":
+                synced = await ctx.bot.tree.sync(guild=ctx.guild)
+            elif spec == "*":
+                ctx.bot.tree.copy_global_to(guild=ctx.guild)
+                synced = await ctx.bot.tree.sync(guild=ctx.guild)
+            elif spec == "^":
+                ctx.bot.tree.clear_commands(guild=ctx.guild)
+                await ctx.bot.tree.sync(guild=ctx.guild)
+                synced = []
+            else:
+                synced = await ctx.bot.tree.sync()
+
+            await ctx.send(
+                f"Synced {len(synced)} commands {'globally' if spec is None else 'to the current guild.'}"
+            )
+            return
+
+    ret = 0
+    for guild in guilds:
+        try:
+            await ctx.bot.tree.sync(guild=guild)
+        except discord.HTTPException:
+            pass
+        else:
+            ret += 1
+
+    await ctx.send(f"Synced the tree to {ret}/{len(guilds)}.")
+
 
 async def main() -> None:
-    bot.owner_ids = [int(id) for id in os.getenv('OWNERS', '').split(',')]
-
-    @bot.event
-    async def on_ready():
-        logger.info(f"Logged in as {bot.user}")
-        active_guilds = len(bot.guilds)
-        if not active_guilds:
-            invite_link = discord.utils.oauth_url(
-                bot.user.id, permissions=discord.Permissions(permissions=8))
-            logger.warning(
-                f"Bot seems to be in no guilds. Access link to invite. \nInvite link: {invite_link}")
-
-        logger.info(f"Active in {active_guilds} guilds")
-
     async def load_cogs():
         loaded = []
         error = []
@@ -113,7 +151,8 @@ async def main() -> None:
             sys.exit(1)
 
     await load_cogs()
-    await bot.start(os.getenv("TOKEN"))
+    logger.info(f"Using TOKEN: {TOKEN}")
+    await bot.start(TOKEN)
 
 if __name__ == "__main__":
     try:

@@ -49,16 +49,6 @@ class General(commands.Cog):
             await interaction.response.edit_message(content=f"The uuid is: `{str(uuid.uuid4())}`",
                                                     view=self.views.uuid)
 
-    @commands.hybrid_command(name="sync", description="Sync commands to discord")
-    @commands.is_owner()
-    async def sync(self, ctx: Context, all_guilds: bool = False) -> None:
-        if all_guilds:
-            synced = await self.bot.tree.sync()
-        else:
-            self.bot.tree.copy_global_to(guild=ctx.guild)
-            synced = await self.bot.tree.sync(guild=ctx.guild)
-        await ctx.send(f":white_check_mark: Synced {len(synced)} commands", ephemeral=True)
-
     async def cog_auto_complete(self, interaction: Interaction, current: str):
         return [Choice(name=cog, value=cog) for cog in self.bot.cogs if current.lower() in cog.lower()]
 
