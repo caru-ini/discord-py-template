@@ -151,7 +151,6 @@ async def main() -> None:
             sys.exit(1)
 
     await load_cogs()
-    logger.info(f"Using TOKEN: {TOKEN}")
     await bot.start(TOKEN)
 
 if __name__ == "__main__":
