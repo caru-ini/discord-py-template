@@ -31,6 +31,7 @@ A highly extensible Discord Bot template with rich logging and features. It come
   - [Adding Cogs](#adding-cogs)
     - [Adding a Cog as a .py file](#adding-a-cog-as-a-py-file)
     - [Adding a Cog as a folder](#adding-a-cog-as-a-folder)
+  - [Syncing Commands](#syncing-commands)
   - [To Do](#to-do)
   - [License](#license)
   - [Contributing](#contributing)
@@ -112,6 +113,19 @@ except ImportError:
 ```
 
 Create a Cog in `cogs/<Cog_name>/main.py` following the same procedure as for .py files.
+
+## Syncing Commands
+
+To sync slash commands, you can use `!sync`.\
+Global commands refer to commands that can be used in all guilds.\
+Here, we refer to servers as guilds.\
+`~`, `*`, and `^` are only valid for the guild where the command is executed.
+
+- `!sync`: Sync all global commands to Discord
+- `!sync ~`: Sync guild-specific commands
+- `!sync *`: Sync all global commands
+- `!sync ^`: Clear the guild's command tree
+- `!sync <guildId>`: Sync all commands to the specified guild
 
 ## To Do
 
